@@ -39,7 +39,7 @@ class User extends Model{
     @Column ({
         type: DataType.BOOLEAN
     })
-    declare confirmed: string
+    declare confirmed: boolean
 
     //Un usuario puede tener varios presupuestos 
     @HasMany(()=>Budget,{

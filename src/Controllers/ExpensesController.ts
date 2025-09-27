@@ -20,15 +20,16 @@ export class ExpenseController {
             res.status(500).json({error:"Ha ocurrido un error"})
         }
     }
+    //Obtiene el gasto por id
     static getid =async(req:Request, res:Response)=>{
        res.json(req.expense)
     }
-
+    //Actualiza el gasto por id
     static updatebyid= async (req:Request,res:Response)=>{
         await req.expense.update(req.body)
         res.json("Se a actualizado correctamente ")
     }
-
+    //Elimina el gasto por id
     static delatebyid=async(req:Request, res:Response)=>{
         await req.expense.update(req.body)
         res.json("Se ha eliminado correctamente")

@@ -6,3 +6,6 @@ export const hashPassword= async(passwod: string)=>{
     //Se guarda en la base de datos
     return await bcrypt.hash(passwod,salt)
 }
+export const checkPassword=async(passwod:string, hash:string)=>{ 
+    return await bcrypt.compare(passwod,hash)
+}

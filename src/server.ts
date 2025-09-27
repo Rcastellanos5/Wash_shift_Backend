@@ -4,6 +4,7 @@ import morgan from 'morgan'
 import { db } from './config/db'
 import budgetRouter from './routes/budgetRouter'
 import authRouter from './routes/authRouter'
+import { limiter } from './config/limiter'
 async function connectDB() {
     try{
         //Intenta conectar a la base de datos 
