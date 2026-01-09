@@ -13,10 +13,10 @@ export class AuthEmail{
             to:user.email,
             subject:'washTicket - Confirma tu cuenta',
             html:`
-            <p>Hola:${user.name}, haz creado tu cuenta en WahTicked,
+            <p>Hola:${user.name}, haz creado tu cuenta en WashTicked,
             <p>Visita el siguiente enlace:</p>
-            <a href="#">Confirmar cuenta</a>
-            <p> e ingresa el codigo: <b> ${user.token}<b></p>
+            <a href="${process.env.FRONTEND_URL}/auth/confirm-account">Confirmar cuenta</a>
+            <p> e ingresa el codigo: <b> ${user.token}</p>
             `
         })
         console.log(email)
@@ -30,7 +30,7 @@ export class AuthEmail{
             html:`
             <p>Hola:${user.name}, haz solicitado restablecer tu password<p>
             <p>Visita el siguiente enlace:</p>
-            <a href="#">Restablecer contraseña</a>
+            <a href="${process.env.FRONTEND_URL}/auth/new-password">Restablecer contraseña</a>
             <p> e ingresa el codigo: <b> ${user.token}<b></p>
             `
         })

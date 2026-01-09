@@ -5,12 +5,16 @@ import Expense from '../models/Expense'
 export class BudgetController {
     static getAll =async(req: Request,res:Response)=>{
 
+        console.log("Desde Mock", req.user.id)
         try{
             const budget =await Budget.findAll({
                 order:[
                     ['createdAt', 'DESC']
-                ]
-                //TODO: filtar por el usuario
+                ],
+                 //filtar por el usuario
+                 where: {
+                    userId: req.user.id
+                 }
             })
             res.json(budget)
 
@@ -22,9 +26,13 @@ export class BudgetController {
     static create =async(req: Request,res:Response)=>{
        try{
             //Crea un instacia
-            const budget= new Budget(req.body)
+            const budget= await Budget.create(req.body)
+            //asigna el id del usuario autenticado
+            budget.userId=req.user.id
            //Se manda a la base datos 
             await budget.save()
+
+            
             //Respuesta por parte del sevidor
             res.status(201).json("Presupuesto creadao correctamente")
 

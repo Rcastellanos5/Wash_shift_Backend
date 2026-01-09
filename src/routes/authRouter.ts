@@ -3,6 +3,8 @@ import { handleInputErrors } from "../middleware/validatio";
 import { AuthController } from "../Controllers/authcontroller";
 import { body, param } from "express-validator";
 import { limiter } from "../config/limiter";
+import { authenticate } from "../middleware/auth";
+import { checkPassword } from "../util/auth";
 const router=Router()
 //Aplica el limitador de peticiones
 router.use(limiter)
@@ -55,7 +57,7 @@ router.post("/validate-token",
     ,handleInputErrors,
     AuthController.validateToken
 )
-//Ruta de cambiar de contraseña 
+//Ruta de restablecer la contraseña 
 router.post("/reset-password/:token",
     param("token")
         .notEmpty()
@@ -67,7 +69,31 @@ router.post("/reset-password/:token",
     AuthController.resetPasswordWhitToken
 )
 router.get('/user',
+    authenticate,
     AuthController.user
 )
+//Ruta para actualizar la contraseña 
+router.post("/update-password",
+    authenticate,
+    body("current_password")
+    .notEmpty()
+    .withMessage("La contraseña actual no puede ir vacia"),
+    body("password")
+    .isLength({min:8})
+    .withMessage("La contrseña es muy corta, minimo 8 caracteres"),
+    handleInputErrors, 
+    AuthController.updateCurrentUserPassword
+
+)
+router.post("/check-password",
+    authenticate, 
+    body("password")
+    .notEmpty()
+    .withMessage("La contraseña no puede ir vacia"),
+    handleInputErrors, 
+    AuthController.checkPassword
+)
+
+
 
 export default router

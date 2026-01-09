@@ -138,25 +138,47 @@ export class AuthController{
         res.json("El password se modifico correctamente")
     }
     static user= async(req:Request, res:Response)=>{
-        const bearer =req.headers.authorization
-
-        if (!bearer){
-            const error=new Error("No Autorizado")
-            return res.status(401).json({error:error.message})
-        }
-        const [ ,token]=bearer.split(' ')
-        if (!token){
-            const error=new Error("Token no valido")
-            return res.status(401).json({error:error.message})
-        }
-
-        try{
-            const decoded=jwt.verify(token, process.env.JWT_SECRET)
-            
-        }catch(error){
-            res.status(500).json({error:'Token no valido'})
-        }
-
+        res.json(req.user)
+      
     }
+    //Actualiza la contraseña 
+    static updateCurrentUserPassword=async(req:Request, res:Response)=>{
+        const{current_password, password}=req.body
+        const {id}=req.user
+        //Consulta si el usuario existe
+        const user= await User.findByPk(id)
+       //Llama a la funcion que se encarga de comprobar la contraseña 
+        const passwordcorrect=await checkPassword(current_password, user.password)
+        //Si no son iguales genera un error
+        if (!passwordcorrect){
+            const error=new Error("La contraseña es incorrecta")
+            res.status(404).json({error:error.message})
+        }
+        //Hashea la nueva contraseña 
+        user.password = await hashPassword(password)
+        //Guarda en la base de datos 
+        await user.save()
+
+        //Respuesta del servido 
+        res.json("Contraseña actualizada")
+    }
+    //Si se necesita autiorizacion para realizar algo en especifico 
+    static checkPassword=async(req:Request, res:Response)=>{
+        const {password}=req.body
+
+        const {id}=req.user
+
+        const user= await User.findByPk(id)
+
+        const isPasswordCorrect =await checkPassword (password, user.password)
+
+        if(!isPasswordCorrect){
+            const error=new Error("Contraseña incorrecta")
+            return res.status(404).json({error:error.message})
+        }
+
+        res.json("Password correcto")
+    }
+
 }
     

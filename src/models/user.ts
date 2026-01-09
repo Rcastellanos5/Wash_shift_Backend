@@ -33,6 +33,10 @@ class User extends Model{
     })
     declare token:string
     //confimation token model 
+    @Column({
+        type:DataType.ENUM("admin","cliente")
+    })
+    declare rol:string
 
     //La confirmacion del token por default esta en false 
     @Default(false)
@@ -40,6 +44,7 @@ class User extends Model{
         type: DataType.BOOLEAN
     })
     declare confirmed: boolean
+
 
     //Un usuario puede tener varios presupuestos 
     @HasMany(()=>Budget,{

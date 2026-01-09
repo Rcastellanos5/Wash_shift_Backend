@@ -13,7 +13,7 @@ async function connectDB() {
         db.sync()
         console.log(colors.blue.bold('Conexion exitosa a la BD'))
     } catch(error){
-        console.log(colors.red.bold("Fallon la conexion a la base de datos"))
+        console.log(colors.red.bold("Fallo la conexion a la base de datos"))
     }
     
 }

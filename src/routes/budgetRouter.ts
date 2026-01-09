@@ -3,17 +3,21 @@ import {BudgetController} from '../Controllers/BudgetController'
 import { body, param } from "express-validator";
 import { NotEmpty } from "sequelize-typescript";
 import { handleInputErrors } from "../middleware/validatio";
-import { validateBudgetExist, validateBudgetId, validateBudgetInput } from "../middleware/budge";
+import { hasAcces, validateBudgetExist, validateBudgetId, validateBudgetInput } from "../middleware/budge";
 import { ExpenseController } from "../Controllers/ExpensesController";
 import {validateExpenseExist, validateExpenseid, validateExpenseInput} from "../middleware/expense"
+import { authenticate } from "../middleware/auth";
 //Se crea la instacia de las rutas 
 const router=Router()
-
+//Solo los usarios auteticado puede interactuar con la diferentes rutas 
+router.use(authenticate)//genera req.user
 //Cada que haya un budget id se ejecuta los siguientes midleware 
 router.param("Budgetid", validateBudgetId)
-router.param("Budgetid", validateBudgetExist)
+router.param("Budgetid", validateBudgetExist)//Genera req.Budget
+router.param('Budgetid',hasAcces)
 router.param("expenseid", validateExpenseid)
 router.param("expenseid",validateExpenseExist)
+
 
 
 //Define una ruta de tipo get 
