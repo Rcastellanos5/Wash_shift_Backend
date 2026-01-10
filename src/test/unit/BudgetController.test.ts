@@ -213,3 +213,25 @@ it("should return a budget whit ID 3 and 0 expenses", async()=>{
 })
 
 })
+
+describe ('BudgetController.updateById', () => {
+    it("should update the budget and return a succes message", async() =>{
+        const BudgetMock={
+            update: jest.fn().mockResolvedValue(true)
+        }
+         const req = createRequest({
+            method: 'PUT',
+            url: "/api/budgets/:budgetid", 
+            budget:BudgetMock, 
+            body:{name:"Updated Budget", amount:8000}
+        })
+        const res = createResponse();
+        await BudgetController.updatebyid(req, res);
+
+        const data=res._getJSONData();
+        expect(res.statusCode).toBe(200);
+        expect(data).toBe("Se a actualizado correctamente");
+        expect(BudgetMock.update).toHaveBeenCalledTimes(1);
+        expect(BudgetMock.update).toHaveBeenCalledWith(req.body);
+    })
+})
