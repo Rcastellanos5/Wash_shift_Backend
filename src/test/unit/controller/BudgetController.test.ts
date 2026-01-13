@@ -1,10 +1,10 @@
 //we used node-mocks-http to simulate our http requests 
 import {createRequest, createResponse} from "node-mocks-http"
-import { budgets } from "../mocks/budgets"
-import { BudgetController } from "../../Controllers/BudgetController"
-import Budget from "../../models/Budget"
-import Expense from "../../models/Expense"
-jest.mock("../../models/Budget", ()=>({
+import { budgets } from "../../mocks/budgets"
+import { BudgetController } from "../../../Controllers/BudgetController"
+import Budget from "../../../models/Budget"
+import Expense from "../../../models/Expense"
+jest.mock("../../../models/Budget", ()=>({
     findAll:jest.fn(),
     create: jest.fn(),
     findByPk: jest.fn(),
