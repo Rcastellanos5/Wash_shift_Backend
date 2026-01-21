@@ -8,7 +8,7 @@ export class ExpenseController {
     static create =async(req:Request, res:Response)=>{
         try{
             //Crea el gasto 
-            const expense =new Expense(req.body)
+            const expense =await Expense.create(req.body)
             //Se agrega la llave foranea 
             expense.budgetid=req.budget.id
            //Se guarda en la base de datos 
