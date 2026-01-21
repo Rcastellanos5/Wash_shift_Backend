@@ -27,11 +27,11 @@ export class ExpenseController {
     //Actualiza el gasto por id
     static updatebyid= async (req:Request,res:Response)=>{
         await req.expense.update(req.body)
-        res.json("Se a actualizado correctamente ")
+        res.json("Se ha actualizado correctamente ")
     }
     //Elimina el gasto por id
     static delatebyid=async(req:Request, res:Response)=>{
-        await req.expense.update(req.body)
+        await req.expense.destroy()
         res.json("Se ha eliminado correctamente")
 
     }
