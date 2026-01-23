@@ -70,7 +70,7 @@ export class AuthController{
         const user= await User.findOne({where:{email}})
         if (!user){
             const error=new Error("Usuario no encontrado")
-            return res.status(409).json({error:error.message})
+            return res.status(404).json({error:error.message})
         }
         //Si el Usuario no esta confirmado
         if (!user.confirmed){
