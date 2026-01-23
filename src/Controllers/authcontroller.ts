@@ -17,12 +17,12 @@ export class AuthController{
        //Si es haci retorna un erro 
        if(userExist){
         const error=new Error('Un usuario con este email ya esta registrado')
-        res.status(409).json({error:error.message})
+        return res.status(409).json({error:error.message})
        }
 
         try{
             //Intacia de usuario 
-            const user= new User (req.body)
+            const user=  await User.create (req.body)
             //Se trae la contraseña y la mandamos a la funcion de hashpasword
             user.password= await hashPassword(password)
            
@@ -38,7 +38,7 @@ export class AuthController{
             })
 
             //Mensaje de confirmacion 
-            res.json("Cuenta creada correctamente ")
+            res.status(201).json("Cuenta creada correctamente ")
 
 
         }catch(error){
