@@ -5,7 +5,7 @@ import { db } from './config/db'
 import budgetRouter from './routes/budgetRouter'
 import authRouter from './routes/authRouter'
 import { limiter } from './config/limiter'
-async function connectDB() {
+export async function connectDB() {
     try{
         //Intenta conectar a la base de datos 
         await db.authenticate()
@@ -28,6 +28,10 @@ app.use(express.json())
 //llama la ruta de budgetRouter 
 app.use('/api/budgets', budgetRouter)
 app.use('/api/auth',authRouter )
+
+app.use('/', (req, res) => {
+    res.send("API is running...")
+})
 
 
 
