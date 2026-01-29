@@ -25,9 +25,9 @@ router.post('/create-account',
 router.post('/confirm-account',
 
     body("token")
-        .notEmpty()
+        
         .isLength({min:6,max:6})
-        .withMessage("Toke no valido"),
+        .withMessage("No se encontró el usuario"),
     handleInputErrors,
     AuthController.confirmatedAccount,
 

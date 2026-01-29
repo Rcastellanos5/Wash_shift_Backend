@@ -2,6 +2,7 @@ import request  from "supertest"
 import { AuthController } from "../../Controllers/authcontroller"
 import server, { connectDB } from "../../server"
 import { response } from "express"
+import { token } from "morgan"
 
 describe("Authentication - Create Acount", () => {
     it("should dysplay validations errors when form is empty", async () => {
@@ -77,6 +78,40 @@ describe("Authentication - Create Acount", () => {
         expect(response.status).toBe(409)
         expect(response.status).not.toBe(400)
         expect(response.status).not.toBe(201)
+        
+    })
+})
+
+describe("Authentication - Account Confirmation", () => {
+    it("should dysplay error if token is empty", async () => {
+        const response = await request(server)
+                        .post("/api/auth/confirm-account")
+                        .send({
+                            token:"not_valid"
+                        })
+        expect(response.status).toBe(400)
+        expect(response.body.errors).toHaveLength(1)
+        expect(response.body).toHaveProperty("errors")
+    })
+     it("should 401 status error if token is invalid", async () => {
+        const response = await request(server)
+                        .post("/api/auth/confirm-account")
+                        .send({
+                            token:"123456"
+                        })
+        expect(response.status).toBe(401)
+        expect(response.body).toHaveProperty("error")
+        expect(response.body.error).toBe("No se encontró el usuario")
+    })
+     it("should confirm account if token is valid", async () => {
+        const token=globalThis.washTicketConfirmationToken
+        const response = await request(server)
+                        .post("/api/auth/confirm-account")
+                        .send({
+                            token
+                        })
+        expect(response.status).toBe(200)
+        expect(response.body).toBe("Cuenta confirmada correctamente")
         
     })
 })

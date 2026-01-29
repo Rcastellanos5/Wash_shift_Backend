@@ -27,8 +27,12 @@ export class AuthController{
             user.password= await hashPassword(password)
            
             //Llamamos la funcion que crea el token 
-            user.token=generateToken()   
+            const token=generateToken()   
             //Se guarda en la base de datos 
+            user.token=token;
+            if(process.env.NODE_ENV !=="development"){
+                globalThis.washTicketConfirmationToken=token
+            }
             await user.save()
 
             AuthEmail.senfConfirmatioEmail({
