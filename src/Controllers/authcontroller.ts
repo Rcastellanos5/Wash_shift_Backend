@@ -21,7 +21,7 @@ export class AuthController{
        }
 
         try{
-            //Intacia de usuario 
+            //Instacia de usuario 
             const user=  await User.create (req.body)
             //Se trae la contraseña y la mandamos a la funcion de hashpasword
             user.password= await hashPassword(password)
@@ -35,7 +35,7 @@ export class AuthController{
             }
             await user.save()
 
-            AuthEmail.senfConfirmatioEmail({
+           await AuthEmail.senfConfirmatioEmail({
                 name:user.name,
                 email:user.email,
                 token:user.token
