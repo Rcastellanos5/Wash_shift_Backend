@@ -34,12 +34,12 @@ export class AuthController{
                 globalThis.washTicketConfirmationToken=token
             }
             await user.save()
-
+            if(process.env.NODE_ENV !=="development"){
            await AuthEmail.senfConfirmatioEmail({
                 name:user.name,
                 email:user.email,
                 token:user.token
-            })
+            })}
 
             //Mensaje de confirmacion 
             res.status(201).json("Cuenta creada correctamente ")

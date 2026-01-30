@@ -8,6 +8,7 @@ type EmailType = {
 
 export class AuthEmail{
     static senfConfirmatioEmail=async(user: EmailType)=>{
+        
         const email= await transport.sendMail({
             from:'WashTicket',
             to:user.email,
@@ -19,7 +20,7 @@ export class AuthEmail{
             <p> e ingresa el codigo: <b> ${user.token}</p>
             `
         })
-        console.log(email)
+        
 
     }
     static senfPasswordResetToken=async(user: EmailType)=>{

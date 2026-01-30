@@ -1,7 +1,7 @@
 import request  from "supertest"
 import { AuthController } from "../../Controllers/authcontroller"
 import server, { connectDB } from "../../server"
-import { response } from "express"
+import e, { response } from "express"
 import { token } from "morgan"
 import * as  authutils from "../../util/auth"
 import * as jwtutils from "../../util/jwt"
@@ -240,4 +240,43 @@ describe("Authentication - Login", () => {
         expect(generateJWT).toHaveBeenCalledWith(1)
         
     })
+})
+describe("Get /api/budgets", () => {
+    let jwt: string;
+    beforeAll(() => {
+        jest.restoreAllMocks();//restaura los mocks a su implementacion original
+    })
+    beforeAll(async () => {
+        const response=await request(server)
+        .post("/api/auth/login")
+        .send({
+            name: "Test User",
+            email: "Valid@gmail.com",
+            password: "validPassword123"
+        })
+        jwt=response.body
+        expect(response.status).toBe(200)
+    })
+    it("should reject unauthenticated access to budgets without a jwt", async () => {
+        const response = await request(server)
+                        .get("/api/budgets")
+        expect(response.status).toBe(401)
+        expect(response.body).toHaveProperty("error")
+    })
+    it("should reject unauthenticated access to budgets without a valid jwt", async () => {
+        const response = await request(server)
+                        .get("/api/budgets")
+                        .auth("invalid-jwt-token", { type: 'bearer' })  
+        expect(response.status).toBe(500)
+        expect(response.body).toHaveProperty("error")
+    })
+    
+     it("should allow authenticated access to budgets with a jwt", async () => {
+        const response = await request(server)
+                        .get("/api/budgets")
+                        .auth(jwt, { type: 'bearer' })
+        expect(response.status).toBe(200)
+        expect(response.body).toHaveLength(0)
+    })
+
 })
