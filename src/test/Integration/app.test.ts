@@ -359,7 +359,7 @@ describe("DELETE /api/budgets/:id", () => {
         
         
     })
-})
+})  
     describe("PUT /api/budgets/:id", () => {
      beforeAll(async () => {
        const response=await authenticateUser()
