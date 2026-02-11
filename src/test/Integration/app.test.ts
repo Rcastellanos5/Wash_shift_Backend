@@ -1,8 +1,7 @@
 import request  from "supertest"
 import { AuthController } from "../../Controllers/authcontroller"
-import server, { connectDB } from "../../server"
-import e, { response } from "express"
-import { token } from "morgan"
+import server from "../../server"
+
 import * as  authutils from "../../util/auth"
 import * as jwtutils from "../../util/jwt"
 import User from "../../models/user"
@@ -241,21 +240,25 @@ describe("Authentication - Login", () => {
         
     })
 })
-describe("Get /api/budgets", () => {
-    let jwt: string;
-    beforeAll(() => {
-        jest.restoreAllMocks();//restaura los mocks a su implementacion original
-    })
-    beforeAll(async () => {
-        const response=await request(server)
+ let jwt: string;
+async function authenticateUser(){
+    const response=await request(server)
         .post("/api/auth/login")
         .send({
-            name: "Test User",
             email: "Valid@gmail.com",
             password: "validPassword123"
         })
         jwt=response.body
-        expect(response.status).toBe(200)
+}
+describe("Get /api/budgets", () => {
+   
+    beforeAll(() => {
+        jest.restoreAllMocks();//restaura los mocks a su implementacion original
+    })
+    beforeAll(async () => {
+        await authenticateUser()
+        
+        
     })
     it("should reject unauthenticated access to budgets without a jwt", async () => {
         const response = await request(server)
@@ -278,5 +281,120 @@ describe("Get /api/budgets", () => {
         expect(response.status).toBe(200)
         expect(response.body).toHaveLength(0)
     })
+
+})
+
+describe("POST /api/budgets", () => {
+    beforeAll(async () => {
+        await authenticateUser()
+    })
+    it("should reject unauthenticated post request to budgets without a jwt", async () => {
+        const response = await request(server)
+                        .post("/api/budgets")
+        expect(response.status).toBe(401)
+        expect(response.body).toHaveProperty("error")
+    })
+     it("should display validation when the form is submitted with invalid data", async () => {
+        const response = await request(server)
+                        .post("/api/budgets")
+                        .auth(jwt, { type: 'bearer' })
+                        .send({})
+        expect(response.status).toBe(400)
+       
+    })
+
+    })
+describe("GET /api/budgets/:id", () => {
+     beforeAll(async () => {
+       const response=await authenticateUser()
+    })
+    it("should return 400 bad request when accessing a non-existent budget id", async () => {
+        const response = await request(server)
+                        .get("/api/budgets/wdjkjdh")
+                        
+        expect(response.status).toBe(400)
+        
+    })
+    it("should return 404 bad request when accessing a non-existent budget id", async () => {
+        const response = await request(server)
+                        .get("/api/budgets/99999")
+                        .auth(jwt, { type: 'bearer' })
+        expect(response.status).toBe(404)
+        
+    })
+     it("should return a single budget by id", async () => {
+        const response = await request(server)
+                        .get("/api/budgets/1")
+                        .auth(jwt, { type: 'bearer' })
+        expect(response.status).toBe(200)
+        
+    })
+
+})
+describe("DELETE /api/budgets/:id", () => {
+     beforeAll(async () => {
+       const response=await authenticateUser()
+    })
+    it("should return 401| bad request when accessing a non-existent budget id", async () => {
+        const response = await request(server)
+                        .delete("/api/budgets/1")
+                        
+        expect(response.status).toBe(401)
+        
+    })
+    it("should return 404 not found when a budget does not exist", async () => {
+        const response = await request(server)
+                        .delete("/api/budgets/3000")
+        expect(response.status).toBe(404)
+        
+        
+    })
+     it("should update a budget with valid data", async () => {
+        const response = await request(server)
+                        .delete("/api/budgets/1")
+                        .auth(jwt, { type: 'bearer' })
+                        
+        expect(response.status).toBe(200)
+
+        
+        
+    })
+})
+    describe("PUT /api/budgets/:id", () => {
+     beforeAll(async () => {
+       const response=await authenticateUser()
+    })
+    it("should return 401| bad request when accessing a non-existent budget id", async () => {
+        const response = await request(server)
+                        .put("/api/budgets/1")
+                        
+        expect(response.status).toBe(404)
+        
+    })
+    it("should display validation error if the form is empty", async () => {
+        const response = await request(server)
+                        .put("/api/budgets/1")
+                        .auth(jwt, { type: 'bearer' })
+                        .send({})
+        expect(response.status).toBe(400)
+        expect(response.body.errors).toHaveLength(4)
+        
+    })
+     it("should update a budget with valid data", async () => {
+        const response = await request(server)
+                        .put("/api/budgets/1")
+                        .auth(jwt, { type: 'bearer' })
+                        .send({
+                            name: "Updated Budget",
+                            amount: 1000,
+   
+                        })
+        expect(response.status).toBe(200)
+
+        
+        
+    })
+    
+
 
 })

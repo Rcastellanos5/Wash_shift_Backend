@@ -13,9 +13,9 @@ export const validateBudgetId =async(req:Request, res:Response, next:NextFunctio
     //Toma el campo 
     await param("Budgetid")
     //Comprueba que sea un entero
-    .isInt().withMessage("Tiene que ser un entero")
+    .isInt().withMessage("Tiene que ser un entero").bail()
     //Comprueba que se mayor a 0
-    .custom(value=>value > 0).withMessage("El id no es valido")
+    .custom(value=>value > 0).withMessage("El id no es valido").bail()
     .run(req)
     let errors=validationResult(req)
         if(!errors.isEmpty()){
